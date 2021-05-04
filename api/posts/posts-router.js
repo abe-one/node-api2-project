@@ -54,10 +54,45 @@ router.post("/", (req, res) => {
           .json({ message: "There was an error while saving the post" });
       });
   }
-
-  //   route.delete("/", (req, res) => {
-  //   const id = req.body.id
-  // })
 });
+
+router.put("/:id", (req, res) => {
+  const { id } = req.params.id;
+  Post.findById(id)
+    .then((post) => {
+      if (!post) {
+        res
+          .status(404)
+          .json({ message: "The post with the specified ID does not exist" });
+      } else {
+        const { title, contents } = req.body;
+        if (!title || !contents) {
+          res.status(400).json({
+            message: "Please provide title and contents for the post",
+          });
+        } else {
+          Post.update(id, req.body)
+            .then((post) => {
+              res.status(200).json(post);
+            })
+            .catch((err) => {
+              console.log(err);
+              res.status(500).json({
+                message: "The post information could not be modified",
+              });
+            });
+        }
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      res
+        .status(500)
+        .json({ message: "The post information could not be modified" });
+    });
+});
+// route.delete("/", (req, res) => {
+//   const id = req.body.id;
+// });
 
 module.exports = router;
