@@ -56,9 +56,9 @@ router.post("/", (req, res) => {
   }
 });
 
-router.put("/:id", (req, res) => {
-  const { id } = req.params.id;
-  Post.findById(id)
+router.put("/:id", async (req, res) => {
+  const id = req.params.id;
+  await Post.findById(id)
     .then((post) => {
       if (!post) {
         res
@@ -72,9 +72,13 @@ router.put("/:id", (req, res) => {
           });
         } else {
           Post.update(id, req.body)
-            .then((post) => {
-              res.status(200).json(post);
-            })
+            .then((result) =>
+              result
+                ? res.status(200).json(post)
+                : res.status(500).json({
+                    message: "The post information could not be modified",
+                  })
+            )
             .catch((err) => {
               console.log(err);
               res.status(500).json({
@@ -91,6 +95,7 @@ router.put("/:id", (req, res) => {
         .json({ message: "The post information could not be modified" });
     });
 });
+
 // route.delete("/", (req, res) => {
 //   const id = req.body.id;
 // });
