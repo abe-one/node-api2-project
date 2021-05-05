@@ -114,15 +114,22 @@ router.delete("/:id", (req, res) => {
     });
 });
 
-// router.get("/:id/comments", (req, res) => {
-//   const id = req.params.id;
-//   Post.findPostComments(id)
-//     .then((result) => {
-//       console.log(result);
-//     })
-//     .catch((err) => {
-//       console.log(err);
-//     });
-// });
+router.get("/:id/comments", (req, res) => {
+  const id = req.params.id;
+  Post.findPostComments(id)
+    .then((result) => {
+      result.length === 0
+        ? res.status(404).json({
+            message: "The post with the specified ID does not contain comments",
+          })
+        : res.status(200).json(result);
+    })
+    .catch((err) => {
+      console.log(err);
+      res
+        .status(500)
+        .json({ message: "The information could not be retrieved" });
+    });
+});
 
 module.exports = router;
