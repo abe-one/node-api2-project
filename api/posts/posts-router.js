@@ -1,4 +1,3 @@
-const { route } = require("../server");
 const Post = require("./posts-model");
 const router = require("express").Router();
 
